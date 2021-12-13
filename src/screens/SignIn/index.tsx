@@ -19,15 +19,20 @@ export function SignIn() {
   const navigation = useNavigation();
 
   async function handleSignIn() {
-    const CLIENT_ID = "";
+    const CLIENT_ID =
+      "228107401726-03imgt2pn515b8po5dju9quku46s050q.apps.googleusercontent.com";
     const REDIRECT_URI = `https://auth.expo.io/@evandroapp/oauth2app`;
     const RESPONSE_TYPE = "token";
     const SCOPE = encodeURI("profile email");
     const authUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${CLIENT_ID}&redirect_uri=${REDIRECT_URI}&response_type=${RESPONSE_TYPE}&scope=${SCOPE}`;
-    const response = await AuthSession.startAsync({ authUrl });
-    console.log(response);
-    console.log(authUrl);
-    navigation.navigate("Profile");
+
+    const { type, params } = (await AuthSession.startAsync({
+      authUrl,
+    })) as AuthResponse;
+
+    if (type === "success") {
+      navigation.navigate("Profile", { token: params.access_token });
+    }
   }
 
   return (
